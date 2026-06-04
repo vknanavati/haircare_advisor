@@ -119,6 +119,14 @@ Return only the JSON object now:"""
 
         response_text = message.content[0].text.strip()
 
+        # Claude occasionally returns truncated JSON missing the closing bracket
+    # attempt to repair it by adding the missing bracket if needed
+        if response_text and not response_text.endswith("]"):
+        # find the last complete object (ends with }) and close the array
+            last_brace = response_text.rfind("}")
+        if last_brace != -1:
+            response_text = response_text[:last_brace + 1] + "\n]"
+
         # strip code fences if Claude added them
         if response_text.startswith("```"):
             response_text = response_text.split("\n", 1)[1]
