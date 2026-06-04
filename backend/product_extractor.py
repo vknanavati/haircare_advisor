@@ -94,6 +94,18 @@ Return only the JSON array now:"""
     # extract the text content from Claude's response
     response_text = message.content[0].text.strip()
 
+    # Claude sometimes wraps JSON in ```json code fences even when asked not to
+    # strip those out so json.loads() can parse the raw JSON cleanly
+    if response_text.startswith("```"):
+        # remove the opening fence (```json or just ```)
+        response_text = response_text.split("\n", 1)[1]
+    if response_text.endswith("```"):
+        # remove the closing fence
+        response_text = response_text.rsplit("```", 1)[0]
+
+    # strip again after removing fences
+    response_text = response_text.strip()
+
     # parse the JSON string Claude returned into a Python list of dicts
     try:
         products = json.loads(response_text)  # convert JSON string to Python list
