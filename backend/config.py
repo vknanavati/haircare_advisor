@@ -28,7 +28,7 @@ TAVILY_API_KEY    = os.getenv("TAVILY_API_KEY")
 # ── Claude Model ──────────────────────────────────────────────────────────────
 # The specific Claude model we'll use for all LLM calls in this app
 # claude-sonnet-4-20250514 is the current Claude Sonnet 4 model string
-CLAUDE_MODEL = "claude-sonnet-4-20250514"
+CLAUDE_MODEL = "claude-sonnet-4-5"
 
 # ── Reddit Search Settings ────────────────────────────────────────────────────
 # How many Tavily search results to retrieve when searching Reddit
