@@ -38,11 +38,16 @@ REDDIT_MAX_RESULTS = 10
 # Tavily will use these to construct targeted site:reddit.com queries
 TARGET_SUBREDDITS = [
     "femalehairadvice",
-    "curlyhair",
+    "Wavyhair",
     "HaircareScience",
     "Hair",
     "beauty",
     "SkincareAddiction",
+    "Haircare",
+    "longhair",
+    "finehair"
+
+
 ]
 
 # ── Product Research Settings ─────────────────────────────────────────────────
