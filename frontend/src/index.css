@@ -1,111 +1,124 @@
+/* index.css — global styles and the dreamy color palette */
+
+@import "tailwindcss";
+
+/* ── Custom CSS variables for the dreamy palette ───────────────────────── */
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  /* base background — very soft warm white with a hint of blush */
+  --bg-base: #fdf4f8;
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+  /* primary pink tones */
+  --pink-soft: #f9c6d8;
+  --pink-light: #fce4ee;
+  --pink-glow: #f472b6;
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* baby blue tones */
+  --blue-soft: #c7e8f9;
+  --blue-light: #e0f4ff;
+  --blue-glow: #67c8f5;
 
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
+  /* glowy gradient used on cards and borders */
+  --gradient-dreamy: linear-gradient(135deg, #fce4ee 0%, #e0f4ff 100%);
+  --gradient-glow: linear-gradient(135deg, #f9c6d8 0%, #c7e8f9 100%);
+
+  /* text colors */
+  --text-primary: #4a3550;
+  --text-secondary: #7a6585;
+  --text-muted: #b8a8c4;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
-}
-
+/* ── Base styles ────────────────────────────────────────────────────────── */
 body {
-  margin: 0;
+  background-color: var(--bg-base);
+  /* soft radial glow in the background for the dreamy effect */
+  background-image:
+    radial-gradient(ellipse at 20% 20%, rgba(249, 198, 216, 0.3) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(199, 232, 249, 0.3) 0%, transparent 50%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  color: var(--text-primary);
+  font-family: 'Georgia', serif;
 }
 
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
+/* ── Glowy card style — used on product cards ───────────────────────────── */
+.card-dreamy {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);              /* frosted glass effect */
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(249, 198, 216, 0.4);
+  border-radius: 20px;
+  box-shadow:
+    0 4px 24px rgba(244, 114, 182, 0.08),
+    0 1px 4px rgba(103, 200, 245, 0.06);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
+.card-dreamy:hover {
+  box-shadow:
+    0 8px 40px rgba(244, 114, 182, 0.16),
+    0 2px 8px rgba(103, 200, 245, 0.12);
+  transform: translateY(-2px);             /* gentle float on hover */
 }
 
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-p {
-  margin: 0;
+/* ── Glowy border effect for the search bar ─────────────────────────────── */
+.input-dreamy {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1.5px solid rgba(249, 198, 216, 0.6);
+  border-radius: 50px;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
+.input-dreamy:focus {
+  border-color: var(--pink-glow);
+  box-shadow: 0 0 0 4px rgba(244, 114, 182, 0.12);
 }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+/* ── Glowy button ───────────────────────────────────────────────────────── */
+.btn-dreamy {
+  background: var(--gradient-glow);
+  border: none;
+  border-radius: 50px;
+  color: var(--text-primary);
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-dreamy:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(244, 114, 182, 0.3);
+}
+
+.btn-dreamy:active {
+  transform: translateY(0);
+}
+
+/* ── Sentiment badge styles ─────────────────────────────────────────────── */
+.badge-recommended {
+  background: linear-gradient(135deg, #d4f7e7, #a8efd1);
+  color: #1a6645;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 12px;
+}
+
+.badge-avoid {
+  background: linear-gradient(135deg, #fde8e8, #fcc8c8);
+  color: #a02020;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 12px;
+}
+
+.badge-controversial {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  color: #92400e;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 12px;
 }
