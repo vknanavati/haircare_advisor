@@ -1,135 +1,126 @@
-// App.jsx
-// ─────────────────────────────────────────────────────────────────────────────
-// Root component — manages application state and orchestrates the UI.
-//
-// Plain explanation:
-//   App.jsx holds all the state: the current query, whether we're loading,
-//   the product results, and any error messages. It passes state and
-//   callbacks down to child components, and calls the Flask API when
-//   the user submits a search.
-//
-// Analogy:
-//   App.jsx is the manager of the whole frontend operation. SearchBar is
-//   the front desk that takes orders, LoadingState is the "please wait"
-//   sign, and ProductCard components are the finished plates. The manager
-//   coordinates all of them and decides what's visible at any moment.
-// ─────────────────────────────────────────────────────────────────────────────
-
 import { useState } from "react";
 import SearchBar from "./components/SearchBar";
 import LoadingState from "./components/LoadingState";
 import ProductCard from "./components/ProductCard";
 
 export default function App() {
-  // ── State ──────────────────────────────────────────────────────────────────
-  const [isLoading, setIsLoading] = useState(false);   // true while pipeline runs
-  const [products, setProducts] = useState([]);          // array of product summaries
-  const [error, setError] = useState(null);              // error message string or null
-  const [lastQuery, setLastQuery] = useState("");        // the query that produced results
-  const [message, setMessage] = useState(null);          // info message from backend
+  const [isLoading, setIsLoading] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [error, setError] = useState(null);
+  const [lastQuery, setLastQuery] = useState("");
+  const [message, setMessage] = useState(null);
+  const [hasSearched, setHasSearched] = useState(false);
 
-  // ── Search handler ─────────────────────────────────────────────────────────
   const handleSearch = async (query) => {
-    // reset state before starting a new search
     setIsLoading(true);
+    setHasSearched(true);
     setProducts([]);
     setError(null);
     setMessage(null);
     setLastQuery(query);
-
     try {
-      // call the Flask API via the Vite proxy
-      // /api/search gets forwarded to http://localhost:5008/search
       const response = await fetch("/api/search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query }),  // send the query as JSON
+        body: JSON.stringify({ query }),
       });
-
-      // parse the JSON response
       const data = await response.json();
-
       if (!response.ok) {
-        // if the server returned an error status, show the error message
         setError(data.error || "Something went wrong. Please try again.");
         return;
       }
-
-      // update state with the results
       setProducts(data.products || []);
-      setMessage(data.message || null);  // optional info message from backend
-
+      setMessage(data.message || null);
     } catch (err) {
-      // network error or JSON parsing error
       setError("Could not reach the server. Make sure the backend is running.");
     } finally {
-      // always turn off loading spinner when done, success or failure
       setIsLoading(false);
     }
   };
 
-  // ── Render ─────────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen">
+    <div>
 
-      {/* ── Sticky search bar — outside the scrolling content ─────────── */}
-      <div
-        className="sticky top-0 z-10 py-4 px-4"
-        style={{
-          background: "rgba(253, 244, 248, 0.85)",
-          backdropFilter: "blur(12px)",
-          WebkitBackdropFilter: "blur(12px)",
-          borderBottom: "1px solid rgba(249, 198, 216, 0.3)",
-        }}
-      >
-        <div className="max-w-5xl mx-auto">
+      {/* header — tall with title before search, compact after */}
+      <div style={{
+        position: "sticky",
+        top: 0,
+        zIndex: 100,
+        backgroundColor: "rgba(255, 255, 255, 0.08)",
+        backdropFilter: "blur(20px)",
+        WebkitBackdropFilter: "blur(20px)",
+        borderBottom: "1px solid rgba(255, 255, 255, 0.15)",
+        padding: hasSearched ? "12px 16px" : "52px 16px 28px",
+        transition: "padding 0.3s ease",
+      }}>
+
+        {/* title — hidden after first search */}
+        {!hasSearched && (
+          <div style={{ textAlign: "center", marginBottom: "20px" }}>
+            <h1 style={{
+              fontFamily: "'Playfair Display', serif",
+              fontSize: "clamp(2.2rem, 5vw, 3.4rem)",
+              fontWeight: 700,
+              color: "white",
+              lineHeight: 1.1,
+              marginBottom: "10px",
+            }}>
+              <span style={{ color: "#fbbf24" }}>✨</span> Haircare Advisor <span style={{ color: "#38bdf8" }}>✨</span>
+            </h1>
+            <p style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: "1rem",
+              color: "rgba(255,255,255,0.8)",
+              fontWeight: 300,
+            }}>
+              Recommendations from real people — powered by Reddit &amp; AI
+            </p>
+          </div>
+        )}
+
+        {/* search bar — always visible */}
+        <div style={{ maxWidth: "680px", margin: "0 auto" }}>
           <SearchBar onSearch={handleSearch} isLoading={isLoading} />
         </div>
       </div>
 
-      {/* ── Scrollable content below the sticky bar ───────────────────── */}
-      <div className="max-w-5xl mx-auto px-4 py-10 flex flex-col gap-10">
+      {/* content */}
+      <div style={{ maxWidth: "72rem", margin: "0 auto", padding: "2.5rem 1rem" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
 
-        {isLoading && <LoadingState />}
+          {isLoading && <LoadingState />}
 
-        {error && !isLoading && (
-          <div
-            className="rounded-2xl p-6 text-center"
-            style={{ background: "var(--gradient-dreamy)" }}
-          >
-            <p className="text-base" style={{ color: "var(--text-primary)" }}>
-              ⚠️ {error}
-            </p>
-          </div>
-        )}
+          {error && !isLoading && (
+            <div className="card-glass" style={{ padding: "24px", textAlign: "center" }}>
+              <p style={{ color: "white" }}>⚠️ {error}</p>
+            </div>
+          )}
 
-        {message && !isLoading && products.length === 0 && (
-          <div
-            className="rounded-2xl p-6 text-center"
-            style={{ background: "var(--gradient-dreamy)" }}
-          >
-            <p className="text-base" style={{ color: "var(--text-secondary)" }}>
-              🌸 {message}
-            </p>
-          </div>
-        )}
+          {message && !isLoading && products.length === 0 && (
+            <div className="card-glass" style={{ padding: "24px", textAlign: "center" }}>
+              <p style={{ color: "rgba(255,255,255,0.85)" }}>✨ {message}</p>
+            </div>
+          )}
 
-        {products.length > 0 && !isLoading && (
-          <div className="text-center">
-            <p className="text-sm" style={{ color: "var(--text-muted)" }}>
+          {products.length > 0 && !isLoading && (
+            <p style={{ textAlign: "center", fontSize: "0.85rem", color: "rgba(255,255,255,0.7)" }}>
               Found <strong>{products.length}</strong> products for "{lastQuery}"
             </p>
-          </div>
-        )}
+          )}
 
-        {products.length > 0 && !isLoading && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {products.map((product, index) => (
-              <ProductCard key={index} product={product} />
-            ))}
-          </div>
-        )}
+          {products.length > 0 && !isLoading && (
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+              gap: "24px",
+            }}>
+              {products.map((product, index) => (
+                <ProductCard key={index} product={product} />
+              ))}
+            </div>
+          )}
 
+        </div>
       </div>
     </div>
   );

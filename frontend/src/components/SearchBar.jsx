@@ -14,31 +14,6 @@ export default function SearchBar({ onSearch, isLoading }) {
 
   return (
     <div style={{ width: "100%", maxWidth: "680px", margin: "0 auto" }}>
-
-      {/* title */}
-      <div style={{ textAlign: "center", marginBottom: "28px" }}>
-        <h1 style={{
-          fontFamily: "'Fraunces', serif",
-          fontSize: "clamp(2rem, 5vw, 3.2rem)",
-          fontWeight: 700,
-          color: "white",
-          lineHeight: 1.1,
-          marginBottom: "8px",
-          letterSpacing: "-0.01em",
-        }}>
-          <span style={{ color: "var(--gold-star)" }}>✦</span> Haircare Advisor <span style={{ color: "var(--pool-blue)" }}>✦</span>
-        </h1>
-        <p style={{
-          fontFamily: "'DM Sans', sans-serif",
-          fontSize: "1rem",
-          color: "rgba(255,255,255,0.75)",
-          fontWeight: 300,
-        }}>
-          Real recommendations from real people — powered by Reddit &amp; AI
-        </p>
-      </div>
-
-      {/* search row */}
       <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
         <input
           type="text"
@@ -59,18 +34,6 @@ export default function SearchBar({ onSearch, isLoading }) {
           {isLoading ? "Searching..." : "Search"}
         </button>
       </div>
-
-      {/* helper */}
-      <p style={{
-        textAlign: "center",
-        marginTop: "12px",
-        fontSize: "0.8rem",
-        color: "rgba(255,255,255,0.5)",
-        fontFamily: "'DM Sans', sans-serif",
-      }}>
-        Try: "moisturizers for curly hair" · "shampoo for oily scalp" · "products for bleached hair"
-      </p>
-
     </div>
   );
 }

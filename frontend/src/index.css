@@ -1,19 +1,4 @@
-@import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap');
-
-:root {
-  --pink-warm:     #f472b6;
-  --purple-mid:    #a855f7;
-  --purple-deep:   #7c3aed;
-  --pool-blue:     #38bdf8;
-  --gold-star:     #fbbf24;
-  --white-glass:   rgba(255, 255, 255, 0.18);
-  --white-card:    rgba(255, 255, 255, 0.22);
-  --border-glass:  rgba(255, 255, 255, 0.3);
-  --text-primary:  #ffffff;
-  --text-soft:     rgba(255, 255, 255, 0.8);
-  --text-muted:    rgba(255, 255, 255, 0.55);
-}
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -21,66 +6,66 @@
   padding: 0;
 }
 
-html, body, #root {
+:root {
+  --gold-star:  #fbbf24;
+  --pool-blue:  #38bdf8;
+  --white-card: rgba(255, 255, 255, 0.22);
+  --border-glass: rgba(255, 255, 255, 0.3);
+}
+
+html, body {
   height: 100%;
+  font-family: 'DM Sans', sans-serif;
+  color: white;
 }
 
 body {
-  font-family: 'DM Sans', sans-serif;
-  min-height: 100vh;
-  background: linear-gradient(135deg,
-    #f472b6 0%,
-    #c084fc 30%,
-    #818cf8 60%,
-    #38bdf8 100%
-  );
+  background: linear-gradient(135deg, #f472b6 0%, #c084fc 30%, #818cf8 60%, #38bdf8 100%);
   background-attachment: fixed;
-  color: var(--text-primary);
+  background-size: cover;
 }
 
-/* ── Frosted glass card ─────────────────────────────────────── */
+#root {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
 .card-glass {
   background: var(--white-card);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border-glass);
   border-radius: 24px;
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.4);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .card-glass:hover {
   transform: translateY(-3px);
-  box-shadow:
-    0 16px 40px rgba(0, 0, 0, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.4);
 }
 
-/* ── Search input ───────────────────────────────────────────── */
 .input-glass {
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255,255,255,0.2);
+  border: 1.5px solid rgba(255,255,255,0.5);
   border-radius: 50px;
-  color: white;
+  color: #3b0764;
   outline: none;
-  transition: border-color 0.2s ease, background 0.2s ease;
   font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease, background 0.2s ease;
 }
 
 .input-glass::placeholder {
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255,255,255,0.6);
 }
 
 .input-glass:focus {
-  background: rgba(255, 255, 255, 0.28);
-  border-color: rgba(255, 255, 255, 0.7);
+  background: rgba(255,255,255,0.28);
+  border-color: rgba(255,255,255,0.8);
 }
 
-/* ── Pill button ────────────────────────────────────────────── */
 .btn-pill {
   background: white;
   color: #7c3aed;
@@ -93,33 +78,23 @@ body {
   white-space: nowrap;
 }
 
-.btn-pill:hover {
-  opacity: 0.92;
-  transform: translateY(-1px);
-}
+.btn-pill:hover { opacity: 0.92; transform: translateY(-1px); }
+.btn-pill:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-.btn-pill:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  transform: none;
-}
-
-/* ── Badges ─────────────────────────────────────────────────── */
 .badge-rec {
-  background: rgba(255, 255, 255, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.45);
+  background: rgba(255,255,255,0.25);
+  border: 1px solid rgba(255,255,255,0.45);
   color: white;
   border-radius: 50px;
   font-size: 0.7rem;
   font-weight: 600;
   padding: 3px 10px;
-  letter-spacing: 0.03em;
 }
 
 .badge-avoid {
-  background: rgba(251, 191, 36, 0.25);
-  border: 1px solid rgba(251, 191, 36, 0.5);
-  color: #fef3c7;
+  background: rgba(251, 113, 133, 0.3);
+  border: 1px solid rgba(251, 113, 133, 0.6);
+  color: #ffe4e6;
   border-radius: 50px;
   font-size: 0.7rem;
   font-weight: 600;
@@ -127,8 +102,8 @@ body {
 }
 
 .badge-controversial {
-  background: rgba(56, 189, 248, 0.2);
-  border: 1px solid rgba(56, 189, 248, 0.45);
+  background: rgba(56,189,248,0.2);
+  border: 1px solid rgba(56,189,248,0.45);
   color: #e0f2fe;
   border-radius: 50px;
   font-size: 0.7rem;
@@ -136,28 +111,26 @@ body {
   padding: 3px 10px;
 }
 
-/* ── Verdict block ──────────────────────────────────────────── */
 .verdict-block {
-  background: rgba(56, 189, 248, 0.15);
-  border: 1px solid rgba(56, 189, 248, 0.3);
+  background: rgba(56, 189, 248, 0.2);
+  border: 1px solid rgba(56, 189, 248, 0.5);
   border-radius: 14px;
   padding: 14px;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.15), inset 0 1px 0 rgba(255,255,255,0.1);
 }
 
-/* ── Divider ────────────────────────────────────────────────── */
 .glass-divider {
   height: 1px;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255,255,255,0.2);
   border: none;
   margin: 12px 0;
 }
 
-/* ── Section label ──────────────────────────────────────────── */
 .section-label {
   font-size: 0.65rem;
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255,255,255,0.6);
   margin-bottom: 6px;
 }

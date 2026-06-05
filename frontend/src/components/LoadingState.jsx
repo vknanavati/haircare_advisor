@@ -1,4 +1,3 @@
-// LoadingState.jsx
 import { useState, useEffect } from "react";
 
 const LOADING_MESSAGES = [
@@ -21,28 +20,47 @@ export default function LoadingState() {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center py-20 gap-6">
+    <div style={{
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: "60px 16px",
+      gap: "20px",
+      textAlign: "center",
+    }}>
 
-      <div className="relative w-16 h-16">
-        <div
-          className="absolute inset-0 rounded-full animate-spin"
-          style={{ background: "var(--gradient-glow)", padding: "3px" }}
-        >
-          <div className="w-full h-full rounded-full bg-white opacity-90" />
-        </div>
-        <div className="absolute inset-0 flex items-center justify-center text-xl">
-          ✨
-        </div>
-      </div>
+      {/* spinner ring */}
+      <div style={{
+        width: "56px",
+        height: "56px",
+        borderRadius: "50%",
+        border: "3px solid rgba(255,255,255,0.2)",
+        borderTopColor: "white",
+        animation: "spin 0.9s linear infinite",
+      }} />
 
-      <p
-        className="text-base font-medium transition-opacity duration-500"
-        style={{ color: "var(--text-secondary)" }}
-      >
+      {/* spinner keyframe */}
+      <style>{`
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
+
+      <p style={{
+        fontFamily: "'DM Sans', sans-serif",
+        fontSize: "1rem",
+        fontWeight: 500,
+        color: "white",
+      }}>
         {LOADING_MESSAGES[messageIndex]}
       </p>
 
-      <p className="text-sm" style={{ color: "var(--text-muted)" }}>
+      <p style={{
+        fontFamily: "'DM Sans', sans-serif",
+        fontSize: "0.8rem",
+        color: "rgba(255,255,255,0.6)",
+      }}>
         This takes about 30–60 seconds — we're reading real Reddit discussions for you
       </p>
 

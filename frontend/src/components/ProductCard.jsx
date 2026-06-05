@@ -1,15 +1,5 @@
 export default function ProductCard({ product }) {
-  const {
-    name,
-    brand,
-    reddit_sentiment,
-    controversial,
-    pros,
-    cons,
-    best_for,
-    price_range,
-    verdict,
-  } = product;
+  const { name, brand, reddit_sentiment, controversial, pros, cons, best_for, price_range, verdict } = product;
 
   return (
     <div className="card-glass" style={{ padding: "24px", display: "flex", flexDirection: "column", gap: "14px" }}>
@@ -17,7 +7,7 @@ export default function ProductCard({ product }) {
       {/* badges */}
       <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
         <span className={reddit_sentiment === "positive" ? "badge-rec" : "badge-avoid"}>
-          {reddit_sentiment === "positive" ? "✦ Reddit Recommended" : "⚠ Reddit Warns Against"}
+          {reddit_sentiment === "positive" ? "✦ Reddit Recommended" : "✦ Reddit Warns Against"}
         </span>
         {controversial && (
           <span className="badge-controversial">✦ Mixed Reviews</span>
@@ -27,9 +17,9 @@ export default function ProductCard({ product }) {
       {/* name + brand */}
       <div>
         <h2 style={{
-          fontFamily: "'Fraunces', serif",
+          fontFamily: "'Playfair Display', serif",
           fontSize: "1.25rem",
-          fontWeight: 600,
+          fontWeight: 700,
           color: "white",
           lineHeight: 1.2,
           marginBottom: "4px",
@@ -60,7 +50,7 @@ export default function ProductCard({ product }) {
           <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "5px" }}>
             {pros.map((pro, i) => (
               <li key={i} style={{ display: "flex", gap: "8px", fontSize: "0.85rem", color: "rgba(255,255,255,0.85)", alignItems: "flex-start" }}>
-                <span style={{ color: "var(--gold-star)", flexShrink: 0, marginTop: "1px" }}>✦</span>
+                <span style={{ flexShrink: 0, marginTop: "1px" }}>🌸</span>
                 <span>{pro}</span>
               </li>
             ))}
@@ -74,8 +64,8 @@ export default function ProductCard({ product }) {
           <div className="section-label">Watch Out For</div>
           <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "5px" }}>
             {cons.map((con, i) => (
-              <li key={i} style={{ display: "flex", gap: "8px", fontSize: "0.85rem", color: "rgba(255,255,255,0.75)", alignItems: "flex-start" }}>
-                <span style={{ color: "var(--pool-blue)", flexShrink: 0, marginTop: "1px" }}>◆</span>
+              <li key={i} style={{ display: "flex", gap: "8px", fontSize: "0.85rem", color: "rgba(255,255,255,0.85)", alignItems: "flex-start" }}>
+                <span style={{ flexShrink: 0, marginTop: "1px" }}>💧</span>
                 <span>{con}</span>
               </li>
             ))}
@@ -86,8 +76,8 @@ export default function ProductCard({ product }) {
       {/* verdict */}
       {verdict && (
         <div className="verdict-block" style={{ marginTop: "auto" }}>
-          <div className="section-label" style={{ color: "rgba(224,242,254,0.7)" }}>Verdict</div>
-          <p style={{ fontSize: "0.85rem", fontStyle: "italic", color: "rgba(255,255,255,0.9)", lineHeight: 1.6 }}>
+          <div className="section-label" style={{ color: "rgba(224,242,254,0.8)" }}>✦ Verdict</div>
+          <p style={{ fontSize: "0.85rem", fontStyle: "italic", color: "white", lineHeight: 1.6 }}>
             "{verdict}"
           </p>
         </div>
