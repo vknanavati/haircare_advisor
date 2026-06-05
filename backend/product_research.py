@@ -19,7 +19,8 @@
 #   JSON summary we send to the frontend.
 # ─────────────────────────────────────────────────────────────────────────────
 
-import json                # for parsing Claude's JSON response
+import json
+import time               # for parsing Claude's JSON response
 import anthropic           # Anthropic's official Python client
 from tavily import TavilyClient  # Tavily's search client
 from config import (
@@ -119,20 +120,15 @@ Return only the JSON object now:"""
 
         response_text = message.content[0].text.strip()
 
-        # Claude occasionally returns truncated JSON missing the closing bracket
-    # attempt to repair it by adding the missing bracket if needed
-        if response_text and not response_text.endswith("]"):
-        # find the last complete object (ends with }) and close the array
-            last_brace = response_text.rfind("}")
-        if last_brace != -1:
-            response_text = response_text[:last_brace + 1] + "\n]"
-
-        # strip code fences if Claude added them
-        if response_text.startswith("```"):
-            response_text = response_text.split("\n", 1)[1]
-        if response_text.endswith("```"):
-            response_text = response_text.rsplit("```", 1)[0]
-        response_text = response_text.strip()
+        # strip code fences FIRST before any other cleanup
+        # Claude wraps JSON in ```json ... ``` despite being told not to
+        # we strip the opening fence line and closing fence line
+        lines = response_text.splitlines()          # split into individual lines
+        if lines and lines[0].startswith("```"):    # if first line is a fence
+            lines = lines[1:]                       # remove the opening fence line
+        if lines and lines[-1].strip() == "```":    # if last line is a closing fence
+            lines = lines[:-1]                      # remove the closing fence line
+        response_text = "\n".join(lines).strip()    # rejoin into a clean string
 
         # parse Claude's JSON response into a Python dict
         summary = json.loads(response_text)
@@ -140,7 +136,6 @@ Return only the JSON object now:"""
 
     except json.JSONDecodeError as e:
         print(f"Failed to parse Claude response for '{product_name}': {e}")
-        # return a minimal fallback dict if parsing fails
         return {
             "name": product_name,
             "brand": "",
@@ -194,7 +189,8 @@ def research_all_products(products: list[dict]) -> list[dict]:
     for i, product in enumerate(products):
         print(f"  Researching {i+1}/{len(products)}: {product['name']}...")
         summary = research_product(product)  # research this one product
-        results.append(summary)              # add its summary to our list
+        results.append(summary)
+        time.sleep(2)              # add its summary to our list
 
     return results  # return all summaries together
 
