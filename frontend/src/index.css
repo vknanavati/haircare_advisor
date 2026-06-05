@@ -122,3 +122,12 @@ body {
   font-weight: 600;
   padding: 3px 12px;
 }
+
+/* ensure the page scrolls at the html/body level, not inside a child div */
+html, body, #root {
+  height: 100%;
+}
+
+#root {
+  overflow-y: auto;
+}
