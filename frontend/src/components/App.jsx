@@ -70,16 +70,28 @@ export default function App() {
 
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen px-4 py-12">
-      <div className="max-w-5xl mx-auto flex flex-col gap-10">
+    <div className="min-h-screen">
 
-        {/* ── Search bar ────────────────────────────────────────────────── */}
-        <SearchBar onSearch={handleSearch} isLoading={isLoading} />
+      {/* ── Sticky search bar — outside the scrolling content ─────────── */}
+      <div
+        className="sticky top-0 z-10 py-4 px-4"
+        style={{
+          background: "rgba(253, 244, 248, 0.85)",
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
+          borderBottom: "1px solid rgba(249, 198, 216, 0.3)",
+        }}
+      >
+        <div className="max-w-5xl mx-auto">
+          <SearchBar onSearch={handleSearch} isLoading={isLoading} />
+        </div>
+      </div>
 
-        {/* ── Loading state ─────────────────────────────────────────────── */}
+      {/* ── Scrollable content below the sticky bar ───────────────────── */}
+      <div className="max-w-5xl mx-auto px-4 py-10 flex flex-col gap-10">
+
         {isLoading && <LoadingState />}
 
-        {/* ── Error message ─────────────────────────────────────────────── */}
         {error && !isLoading && (
           <div
             className="rounded-2xl p-6 text-center"
@@ -91,7 +103,6 @@ export default function App() {
           </div>
         )}
 
-        {/* ── Info message (no results) ──────────────────────────────────── */}
         {message && !isLoading && products.length === 0 && (
           <div
             className="rounded-2xl p-6 text-center"
@@ -103,7 +114,6 @@ export default function App() {
           </div>
         )}
 
-        {/* ── Results header ────────────────────────────────────────────── */}
         {products.length > 0 && !isLoading && (
           <div className="text-center">
             <p className="text-sm" style={{ color: "var(--text-muted)" }}>
@@ -112,7 +122,6 @@ export default function App() {
           </div>
         )}
 
-        {/* ── Product cards grid ────────────────────────────────────────── */}
         {products.length > 0 && !isLoading && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {products.map((product, index) => (

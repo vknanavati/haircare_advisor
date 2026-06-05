@@ -41,10 +41,10 @@ export default function SearchBar({ onSearch, isLoading }) {
       {/* ── Title and subtitle ──────────────────────────────────────────── */}
       <div className="text-center mb-8">
         <h1 className="text-4xl font-bold mb-2" style={{ color: "var(--text-primary)" }}>
-          ✨ Haircare Advisor
+          ✨ Haircare Advisor ✨
         </h1>
         <p className="text-lg" style={{ color: "var(--text-secondary)" }}>
-          Real recommendations from real people — powered by Reddit & AI
+          Recommendations from real people - powered by Reddit & AI
         </p>
       </div>
 
@@ -69,12 +69,6 @@ export default function SearchBar({ onSearch, isLoading }) {
           {isLoading ? "Searching..." : "Search"}
         </button>
       </div>
-
-      {/* ── Helper text below the search bar ────────────────────────────── */}
-      <p className="text-center mt-3 text-sm" style={{ color: "var(--text-muted)" }}>
-        Try: "moisturizers for curly hair" · "shampoo for oily scalp" · "products for bleached hair"
-      </p>
-
     </div>
   );
 }
