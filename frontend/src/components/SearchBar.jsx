@@ -1,74 +1,76 @@
-// SearchBar.jsx
-// ─────────────────────────────────────────────────────────────────────────────
-// The search input and submit button at the top of the app.
-// Accepts the user's natural language query and triggers the search.
-//
-// Plain explanation:
-//   This component renders a text input and a button. When the user
-//   types a query and clicks Search (or presses Enter), it calls the
-//   onSearch function passed down from App.jsx with the query string.
-//   While a search is in progress, the button is disabled so the user
-//   can't submit multiple requests at once.
-//
-// Analogy:
-//   Think of this as the front desk of the research operation. The user
-//   walks up, states their request, and the front desk (SearchBar) passes
-//   it back to the manager (App.jsx) to kick off the pipeline.
-// ─────────────────────────────────────────────────────────────────────────────
-
-import { useState } from "react";  // useState lets us track what the user typed
+import { useState } from "react";
 
 export default function SearchBar({ onSearch, isLoading }) {
-  // query holds whatever the user has typed in the input box
   const [query, setQuery] = useState("");
 
-  // called when the user clicks Search or presses Enter
   const handleSubmit = () => {
-    const trimmed = query.trim();  // remove leading/trailing whitespace
-    if (trimmed && !isLoading) {   // only search if there's a query and we're not already loading
-      onSearch(trimmed);           // pass the query up to App.jsx
-    }
+    const trimmed = query.trim();
+    if (trimmed && !isLoading) onSearch(trimmed);
   };
 
-  // allows pressing Enter to submit instead of clicking the button
   const handleKeyDown = (e) => {
     if (e.key === "Enter") handleSubmit();
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
+    <div style={{ width: "100%", maxWidth: "680px", margin: "0 auto" }}>
 
-      {/* ── Title and subtitle ──────────────────────────────────────────── */}
-      <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold mb-2" style={{ color: "var(--text-primary)" }}>
-          ✨ Haircare Advisor ✨
+      {/* title */}
+      <div style={{ textAlign: "center", marginBottom: "28px" }}>
+        <h1 style={{
+          fontFamily: "'Fraunces', serif",
+          fontSize: "clamp(2rem, 5vw, 3.2rem)",
+          fontWeight: 700,
+          color: "white",
+          lineHeight: 1.1,
+          marginBottom: "8px",
+          letterSpacing: "-0.01em",
+        }}>
+          <span style={{ color: "var(--gold-star)" }}>✦</span> Haircare Advisor <span style={{ color: "var(--pool-blue)" }}>✦</span>
         </h1>
-        <p className="text-lg" style={{ color: "var(--text-secondary)" }}>
-          Recommendations from real people - powered by Reddit & AI
+        <p style={{
+          fontFamily: "'DM Sans', sans-serif",
+          fontSize: "1rem",
+          color: "rgba(255,255,255,0.75)",
+          fontWeight: 300,
+        }}>
+          Real recommendations from real people — powered by Reddit &amp; AI
         </p>
       </div>
 
-      {/* ── Search input row ────────────────────────────────────────────── */}
-      <div className="flex gap-3">
+      {/* search row */}
+      <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
         <input
           type="text"
-          className="input-dreamy flex-1 px-6 py-4 text-base"
+          className="input-glass"
+          style={{ flex: 1, padding: "14px 24px", fontSize: "0.95rem" }}
           placeholder="e.g. heat protectants for fine thick hair..."
           value={query}
-          onChange={(e) => setQuery(e.target.value)}  // update query as user types
-          onKeyDown={handleKeyDown}                    // submit on Enter key
-          disabled={isLoading}                         // disable while loading
-          style={{ color: "var(--text-primary)" }}
+          onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={handleKeyDown}
+          disabled={isLoading}
         />
-
         <button
-          className="btn-dreamy px-8 py-4 text-base"
+          className="btn-pill"
+          style={{ padding: "14px 28px", fontSize: "0.95rem" }}
           onClick={handleSubmit}
-          disabled={isLoading || !query.trim()}  // disable if loading or empty
+          disabled={isLoading || !query.trim()}
         >
           {isLoading ? "Searching..." : "Search"}
         </button>
       </div>
+
+      {/* helper */}
+      <p style={{
+        textAlign: "center",
+        marginTop: "12px",
+        fontSize: "0.8rem",
+        color: "rgba(255,255,255,0.5)",
+        fontFamily: "'DM Sans', sans-serif",
+      }}>
+        Try: "moisturizers for curly hair" · "shampoo for oily scalp" · "products for bleached hair"
+      </p>
+
     </div>
   );
 }

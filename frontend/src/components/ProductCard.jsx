@@ -1,21 +1,4 @@
-// ProductCard.jsx
-// ─────────────────────────────────────────────────────────────────────────────
-// Displays a single product's research summary as a styled card.
-//
-// Plain explanation:
-//   This component receives one product summary object and renders it
-//   as a visual card with the product name, sentiment badge, pros, cons,
-//   best-for, price, and verdict. Each piece of data maps to a specific
-//   section of the card.
-//
-// Analogy:
-//   Think of this as a product report card. Each card is one student
-//   (product) with their grades (pros/cons), a teacher's note (verdict),
-//   and a gold star or warning sticker (sentiment badge) on the front.
-// ─────────────────────────────────────────────────────────────────────────────
-
 export default function ProductCard({ product }) {
-  // destructure all the fields from the product summary object
   const {
     name,
     brand,
@@ -29,78 +12,55 @@ export default function ProductCard({ product }) {
   } = product;
 
   return (
-    <div className="card-dreamy p-6 flex flex-col gap-4">
+    <div className="card-glass" style={{ padding: "24px", display: "flex", flexDirection: "column", gap: "14px" }}>
 
-      {/* ── Card header — name, brand, badges ───────────────────────────── */}
-      <div className="flex flex-col gap-2">
+      {/* badges */}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+        <span className={reddit_sentiment === "positive" ? "badge-rec" : "badge-avoid"}>
+          {reddit_sentiment === "positive" ? "✦ Reddit Recommended" : "⚠ Reddit Warns Against"}
+        </span>
+        {controversial && (
+          <span className="badge-controversial">✦ Mixed Reviews</span>
+        )}
+      </div>
 
-        {/* badge row */}
-        <div className="flex flex-wrap gap-2">
-          {/* sentiment badge — recommended or avoid */}
-          <span className={reddit_sentiment === "positive" ? "badge-recommended" : "badge-avoid"}>
-            {reddit_sentiment === "positive" ? "✅ Reddit Recommended" : "⚠️ Reddit Warns Against"}
-          </span>
-
-          {/* controversial badge — shown only when mixed reviews exist */}
-          {controversial && (
-            <span className="badge-controversial">⚡ Mixed Reviews</span>
-          )}
-        </div>
-
-        {/* product name */}
-        <h2 className="text-xl font-bold" style={{ color: "var(--text-primary)" }}>
+      {/* name + brand */}
+      <div>
+        <h2 style={{
+          fontFamily: "'Fraunces', serif",
+          fontSize: "1.25rem",
+          fontWeight: 600,
+          color: "white",
+          lineHeight: 1.2,
+          marginBottom: "4px",
+        }}>
           {name}
         </h2>
-
-        {/* brand name */}
-        <p className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>
-          {brand}
-        </p>
-
+        <p style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.6)" }}>{brand}</p>
       </div>
 
-      {/* ── Divider ─────────────────────────────────────────────────────── */}
-      <div
-        className="h-px w-full"
-        style={{ background: "var(--gradient-dreamy)" }}
-      />
+      <hr className="glass-divider" />
 
-      {/* ── Best for + Price row ─────────────────────────────────────────── */}
-      <div className="flex flex-wrap gap-4">
-
-        <div className="flex flex-col gap-1">
-          <span className="text-xs font-semibold uppercase tracking-wide"
-            style={{ color: "var(--text-muted)" }}>
-            Best For
-          </span>
-          <span className="text-sm" style={{ color: "var(--text-primary)" }}>
-            {best_for}
-          </span>
+      {/* best for + price */}
+      <div style={{ display: "flex", justifyContent: "space-between", gap: "12px", flexWrap: "wrap" }}>
+        <div>
+          <div className="section-label">Best For</div>
+          <p style={{ fontSize: "0.85rem", color: "rgba(255,255,255,0.85)" }}>{best_for}</p>
         </div>
-
-        <div className="flex flex-col gap-1 ml-auto text-right">
-          <span className="text-xs font-semibold uppercase tracking-wide"
-            style={{ color: "var(--text-muted)" }}>
-            Price Range
-          </span>
-          <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
-            {price_range}
-          </span>
+        <div style={{ textAlign: "right" }}>
+          <div className="section-label">Price</div>
+          <p style={{ fontSize: "0.95rem", fontWeight: 600, color: "white" }}>{price_range}</p>
         </div>
-
       </div>
 
-      {/* ── Pros ────────────────────────────────────────────────────────── */}
+      {/* pros */}
       {pros && pros.length > 0 && (
-        <div className="flex flex-col gap-2">
-          <span className="text-xs font-semibold uppercase tracking-wide"
-            style={{ color: "var(--text-muted)" }}>
-            What People Love
-          </span>
-          <ul className="flex flex-col gap-1">
+        <div>
+          <div className="section-label">What People Love</div>
+          <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "5px" }}>
             {pros.map((pro, i) => (
-              <li key={i} className="flex gap-2 text-sm" style={{ color: "var(--text-primary)" }}>
-                <span className="mt-0.5 shrink-0">🌸</span>
+              <li key={i} style={{ display: "flex", gap: "8px", fontSize: "0.85rem", color: "rgba(255,255,255,0.85)", alignItems: "flex-start" }}>
+                <span style={{ color: "var(--gold-star)", flexShrink: 0, marginTop: "1px" }}>✦</span>
                 <span>{pro}</span>
               </li>
             ))}
@@ -108,17 +68,14 @@ export default function ProductCard({ product }) {
         </div>
       )}
 
-      {/* ── Cons ────────────────────────────────────────────────────────── */}
+      {/* cons */}
       {cons && cons.length > 0 && (
-        <div className="flex flex-col gap-2">
-          <span className="text-xs font-semibold uppercase tracking-wide"
-            style={{ color: "var(--text-muted)" }}>
-            Watch Out For
-          </span>
-          <ul className="flex flex-col gap-1">
+        <div>
+          <div className="section-label">Watch Out For</div>
+          <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "5px" }}>
             {cons.map((con, i) => (
-              <li key={i} className="flex gap-2 text-sm" style={{ color: "var(--text-primary)" }}>
-                <span className="mt-0.5 shrink-0">💧</span>
+              <li key={i} style={{ display: "flex", gap: "8px", fontSize: "0.85rem", color: "rgba(255,255,255,0.75)", alignItems: "flex-start" }}>
+                <span style={{ color: "var(--pool-blue)", flexShrink: 0, marginTop: "1px" }}>◆</span>
                 <span>{con}</span>
               </li>
             ))}
@@ -126,17 +83,11 @@ export default function ProductCard({ product }) {
         </div>
       )}
 
-      {/* ── Verdict ─────────────────────────────────────────────────────── */}
+      {/* verdict */}
       {verdict && (
-        <div
-          className="rounded-xl p-4 mt-auto"
-          style={{ background: "var(--gradient-dreamy)" }}
-        >
-          <span className="text-xs font-semibold uppercase tracking-wide block mb-1"
-            style={{ color: "var(--text-muted)" }}>
-            Verdict
-          </span>
-          <p className="text-sm italic" style={{ color: "var(--text-primary)" }}>
+        <div className="verdict-block" style={{ marginTop: "auto" }}>
+          <div className="section-label" style={{ color: "rgba(224,242,254,0.7)" }}>Verdict</div>
+          <p style={{ fontSize: "0.85rem", fontStyle: "italic", color: "rgba(255,255,255,0.9)", lineHeight: 1.6 }}>
             "{verdict}"
           </p>
         </div>

@@ -1,133 +1,163 @@
-/* index.css — global styles and the dreamy color palette */
-
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap');
 
-/* ── Custom CSS variables for the dreamy palette ───────────────────────── */
 :root {
-  /* base background — very soft warm white with a hint of blush */
-  --bg-base: #fdf4f8;
-
-  /* primary pink tones */
-  --pink-soft: #f9c6d8;
-  --pink-light: #fce4ee;
-  --pink-glow: #f472b6;
-
-  /* baby blue tones */
-  --blue-soft: #c7e8f9;
-  --blue-light: #e0f4ff;
-  --blue-glow: #67c8f5;
-
-  /* glowy gradient used on cards and borders */
-  --gradient-dreamy: linear-gradient(135deg, #fce4ee 0%, #e0f4ff 100%);
-  --gradient-glow: linear-gradient(135deg, #f9c6d8 0%, #c7e8f9 100%);
-
-  /* text colors */
-  --text-primary: #4a3550;
-  --text-secondary: #7a6585;
-  --text-muted: #b8a8c4;
+  --pink-warm:     #f472b6;
+  --purple-mid:    #a855f7;
+  --purple-deep:   #7c3aed;
+  --pool-blue:     #38bdf8;
+  --gold-star:     #fbbf24;
+  --white-glass:   rgba(255, 255, 255, 0.18);
+  --white-card:    rgba(255, 255, 255, 0.22);
+  --border-glass:  rgba(255, 255, 255, 0.3);
+  --text-primary:  #ffffff;
+  --text-soft:     rgba(255, 255, 255, 0.8);
+  --text-muted:    rgba(255, 255, 255, 0.55);
 }
 
-/* ── Base styles ────────────────────────────────────────────────────────── */
-body {
-  background-color: var(--bg-base);
-  /* soft radial glow in the background for the dreamy effect */
-  background-image:
-    radial-gradient(ellipse at 20% 20%, rgba(249, 198, 216, 0.3) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 80%, rgba(199, 232, 249, 0.3) 0%, transparent 50%);
-  background-attachment: fixed;
-  min-height: 100vh;
-  color: var(--text-primary);
-  font-family: 'Georgia', serif;
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-/* ── Glowy card style — used on product cards ───────────────────────────── */
-.card-dreamy {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(12px);              /* frosted glass effect */
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(249, 198, 216, 0.4);
-  border-radius: 20px;
-  box-shadow:
-    0 4px 24px rgba(244, 114, 182, 0.08),
-    0 1px 4px rgba(103, 200, 245, 0.06);
-  transition: box-shadow 0.3s ease, transform 0.3s ease;
-}
-
-.card-dreamy:hover {
-  box-shadow:
-    0 8px 40px rgba(244, 114, 182, 0.16),
-    0 2px 8px rgba(103, 200, 245, 0.12);
-  transform: translateY(-2px);             /* gentle float on hover */
-}
-
-/* ── Glowy border effect for the search bar ─────────────────────────────── */
-.input-dreamy {
-  background: rgba(255, 255, 255, 0.8);
-  border: 1.5px solid rgba(249, 198, 216, 0.6);
-  border-radius: 50px;
-  outline: none;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.input-dreamy:focus {
-  border-color: var(--pink-glow);
-  box-shadow: 0 0 0 4px rgba(244, 114, 182, 0.12);
-}
-
-/* ── Glowy button ───────────────────────────────────────────────────────── */
-.btn-dreamy {
-  background: var(--gradient-glow);
-  border: none;
-  border-radius: 50px;
-  color: var(--text-primary);
-  font-weight: 600;
-  cursor: pointer;
-  transition: opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.btn-dreamy:hover {
-  opacity: 0.9;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(244, 114, 182, 0.3);
-}
-
-.btn-dreamy:active {
-  transform: translateY(0);
-}
-
-/* ── Sentiment badge styles ─────────────────────────────────────────────── */
-.badge-recommended {
-  background: linear-gradient(135deg, #d4f7e7, #a8efd1);
-  color: #1a6645;
-  border-radius: 50px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 3px 12px;
-}
-
-.badge-avoid {
-  background: linear-gradient(135deg, #fde8e8, #fcc8c8);
-  color: #a02020;
-  border-radius: 50px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 3px 12px;
-}
-
-.badge-controversial {
-  background: linear-gradient(135deg, #fef3c7, #fde68a);
-  color: #92400e;
-  border-radius: 50px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 3px 12px;
-}
-
-/* ensure the page scrolls at the html/body level, not inside a child div */
 html, body, #root {
   height: 100%;
 }
 
-#root {
-  overflow-y: auto;
+body {
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  background: linear-gradient(135deg,
+    #f472b6 0%,
+    #c084fc 30%,
+    #818cf8 60%,
+    #38bdf8 100%
+  );
+  background-attachment: fixed;
+  color: var(--text-primary);
+}
+
+/* ── Frosted glass card ─────────────────────────────────────── */
+.card-glass {
+  background: var(--white-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-glass);
+  border-radius: 24px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card-glass:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+/* ── Search input ───────────────────────────────────────────── */
+.input-glass {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50px;
+  color: white;
+  outline: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.input-glass::placeholder {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.input-glass:focus {
+  background: rgba(255, 255, 255, 0.28);
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+/* ── Pill button ────────────────────────────────────────────── */
+.btn-pill {
+  background: white;
+  color: #7c3aed;
+  border: none;
+  border-radius: 50px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-pill:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+.btn-pill:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ── Badges ─────────────────────────────────────────────────── */
+.badge-rec {
+  background: rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  color: white;
+  border-radius: 50px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  letter-spacing: 0.03em;
+}
+
+.badge-avoid {
+  background: rgba(251, 191, 36, 0.25);
+  border: 1px solid rgba(251, 191, 36, 0.5);
+  color: #fef3c7;
+  border-radius: 50px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 3px 10px;
+}
+
+.badge-controversial {
+  background: rgba(56, 189, 248, 0.2);
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  color: #e0f2fe;
+  border-radius: 50px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 3px 10px;
+}
+
+/* ── Verdict block ──────────────────────────────────────────── */
+.verdict-block {
+  background: rgba(56, 189, 248, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: 14px;
+  padding: 14px;
+}
+
+/* ── Divider ────────────────────────────────────────────────── */
+.glass-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  margin: 12px 0;
+}
+
+/* ── Section label ──────────────────────────────────────────── */
+.section-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 6px;
 }
