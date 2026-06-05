@@ -46,8 +46,6 @@ TARGET_SUBREDDITS = [
     "Haircare",
     "longhair",
     "finehair"
-
-
 ]
 
 # ── Product Research Settings ─────────────────────────────────────────────────
