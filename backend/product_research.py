@@ -129,7 +129,7 @@ def research_all_products(products: list[dict]) -> list[dict]:
     """
     results = {}
 
-    with ThreadPoolExecutor(max_workers=6) as executor:
+    with ThreadPoolExecutor(max_workers=3) as executor:
         future_to_index = {
             executor.submit(research_product, product): i
             for i, product in enumerate(products)
