@@ -1,28 +1,8 @@
 # product_research.py
-# ─────────────────────────────────────────────────────────────────────────────
-# For each product extracted from Reddit, searches the web for reviews
-# and information, then uses Claude to synthesize a structured summary.
-#
-# Plain explanation:
-#   This script takes the list of products from product_extractor.py,
-#   searches the web for each one using Tavily, and sends those search
-#   results to Claude asking it to return a structured JSON summary with
-#   pros, cons, best-for notes, price range, and a verdict. This is the
-#   final intelligence step before the data reaches the frontend.
-#
-# Analogy:
-#   Think of this as a product reviewer whose job is to research each
-#   item on a shopping list. For every product, they read the reviews
-#   from multiple sources, then write a concise, structured report card
-#   — pros, cons, who it's best for, and what it costs. Claude is the
-#   reviewer, Tavily is the research tool, and the report card is the
-#   JSON summary we send to the frontend.
-# ─────────────────────────────────────────────────────────────────────────────
-
 import json
-import time               # for parsing Claude's JSON response
-import anthropic           # Anthropic's official Python client
-from tavily import TavilyClient  # Tavily's search client
+import anthropic
+from tavily import TavilyClient
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from config import (
     ANTHROPIC_API_KEY,
     TAVILY_API_KEY,
@@ -32,58 +12,30 @@ from config import (
 
 
 def research_product(product: dict) -> dict:
-    """
-    Researches a single product and returns a structured summary.
+    product_name     = product["name"]
+    reddit_sentiment = product["sentiment"]
 
-    Plain explanation:
-        Takes a product dict with 'name' and 'sentiment' fields, searches
-        the web for reviews and information about that product, sends those
-        results to Claude, and returns a rich structured summary dict.
-
-    Analogy:
-        Like sending a researcher to find everything written about one
-        specific product — then having an expert editor read all of it
-        and distill it into a single, clean one-page brief. You get the
-        essential information without having to read everything yourself.
-
-    Args:
-        product: dict with 'name' (str) and 'sentiment' (str) fields
-
-    Returns:
-        a dict with full product research — name, sentiment, pros, cons,
-        best_for, price_range, verdict, and controversial flag
-    """
-    product_name = product["name"]        # the product name string
-    reddit_sentiment = product["sentiment"]  # 'positive' or 'negative' from Reddit
-
-    # ── Step 1: Search the web for this product ───────────────────────────────
     tavily_client = TavilyClient(api_key=TAVILY_API_KEY)
 
     try:
-        # search for reviews and information about this specific product
         search_response = tavily_client.search(
             query=f"{product_name} haircare review pros cons",
             max_results=PRODUCT_SEARCH_RESULTS,
             search_depth="advanced",
             include_answer=False,
         )
-
-        # collect all the content from search results into one block of text
         search_results = []
         for result in search_response.get("results", []):
             content = result.get("content", "")
             title   = result.get("title", "")
             if content:
                 search_results.append(f"SOURCE: {title}\nCONTENT: {content}")
-
-        # join all results into one string for Claude to read
         research_text = "\n\n".join(search_results)
 
     except Exception as e:
         print(f"Tavily search failed for '{product_name}': {e}")
-        research_text = ""  # proceed with empty research if search fails
+        research_text = ""
 
-    # ── Step 2: Ask Claude to synthesize the research ─────────────────────────
     anthropic_client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
     prompt = f"""You are an expert haircare product reviewer.
@@ -120,17 +72,13 @@ Return only the JSON object now:"""
 
         response_text = message.content[0].text.strip()
 
-        # strip code fences FIRST before any other cleanup
-        # Claude wraps JSON in ```json ... ``` despite being told not to
-        # we strip the opening fence line and closing fence line
-        lines = response_text.splitlines()          # split into individual lines
-        if lines and lines[0].startswith("```"):    # if first line is a fence
-            lines = lines[1:]                       # remove the opening fence line
-        if lines and lines[-1].strip() == "```":    # if last line is a closing fence
-            lines = lines[:-1]                      # remove the closing fence line
-        response_text = "\n".join(lines).strip()    # rejoin into a clean string
+        lines = response_text.splitlines()
+        if lines and lines[0].startswith("```"):
+            lines = lines[1:]
+        if lines and lines[-1].strip() == "```":
+            lines = lines[:-1]
+        response_text = "\n".join(lines).strip()
 
-        # parse Claude's JSON response into a Python dict
         summary = json.loads(response_text)
         return summary
 
@@ -165,40 +113,54 @@ Return only the JSON object now:"""
 
 def research_all_products(products: list[dict]) -> list[dict]:
     """
-    Researches every product in the list and returns all summaries.
+    Researches all products simultaneously using parallel threads.
 
     Plain explanation:
-        Loops through every product dict, calls research_product() on each
-        one, collects the results, and returns them all as a list. This is
-        the function that app.py will call.
+        Instead of researching products one at a time, this function
+        launches all research calls at the same time using a thread pool.
+        Each thread handles one product independently and we collect
+        results as threads finish, reassembled in the original order.
 
     Analogy:
-        Like handing a stack of product names to a team of reviewers —
-        one reviewer per product — and collecting all their report cards
-        when they're done. Each reviewer works on one product; this
-        function coordinates the whole team.
-
-    Args:
-        products: list of dicts with 'name' and 'sentiment' fields
-
-    Returns:
-        list of structured product summary dicts
+        Old approach: one chef cooking 6 dishes back to back.
+        New approach: 6 chefs cooking simultaneously — total time is
+        roughly the time for the slowest single dish, not the sum of all.
+        ThreadPoolExecutor is the kitchen manager assigning one chef per dish.
     """
-    results = []  # will hold all the research summaries
+    results = {}
 
-    for i, product in enumerate(products):
-        print(f"  Researching {i+1}/{len(products)}: {product['name']}...")
-        summary = research_product(product)  # research this one product
-        results.append(summary)
-        time.sleep(2)              # add its summary to our list
+    with ThreadPoolExecutor(max_workers=6) as executor:
+        future_to_index = {
+            executor.submit(research_product, product): i
+            for i, product in enumerate(products)
+        }
 
-    return results  # return all summaries together
+        for future in as_completed(future_to_index):
+            index        = future_to_index[future]
+            product_name = products[index]["name"]
+
+            try:
+                results[index] = future.result()
+                print(f"  ✓ Finished: {product_name}")
+            except Exception as e:
+                print(f"  ✗ Failed: {product_name} — {e}")
+                results[index] = {
+                    "name": product_name,
+                    "brand": "",
+                    "reddit_sentiment": products[index]["sentiment"],
+                    "controversial": False,
+                    "pros": [],
+                    "cons": [],
+                    "best_for": "Unknown",
+                    "price_range": "$?",
+                    "verdict": "Research unavailable for this product.",
+                }
+
+    return [results[i] for i in sorted(results.keys())]
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Test block — runs only when you execute this file directly
-# ─────────────────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
+    import time
     from reddit_search import search_reddit
     from product_extractor import extract_products
 
@@ -212,19 +174,12 @@ if __name__ == "__main__":
     products = extract_products(reddit_text, test_query)
     print(f"Found {len(products)} products")
 
-    print("\nStep 3: Researching each product...")
+    print(f"\nStep 3: Researching {len(products)} products IN PARALLEL...")
+    start = time.time()
     summaries = research_all_products(products)
-
-    print("\n" + "=" * 60)
-    print("FINAL RESULTS")
-    print("=" * 60)
+    elapsed = time.time() - start
+    print(f"Completed in {elapsed:.1f} seconds")
 
     for s in summaries:
         print(f"\n{'⚠️  AVOID' if s['reddit_sentiment'] == 'negative' else '✅ RECOMMENDED'}: {s['name']}")
-        if s.get("controversial"):
-            print("   ⚡ CONTROVERSIAL — mixed reviews")
-        print(f"   Best for: {s.get('best_for', 'N/A')}")
-        print(f"   Price: {s.get('price_range', 'N/A')}")
-        print(f"   Pros: {', '.join(s.get('pros', []))}")
-        print(f"   Cons: {', '.join(s.get('cons', []))}")
         print(f"   Verdict: {s.get('verdict', 'N/A')}")
